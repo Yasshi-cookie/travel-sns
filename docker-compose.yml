@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  app:
+    build: ./infra/php
+    volumes:
+      - ./src:/data
+
+  web:
+    image: nginx:1.20-alpine
+    ports:
+      - 8081:80 # port番号8081は適宜変更してOK
+    volumes:
+      - ./src:/data
+      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    working_dir: /data
+
+  db:
+    build: ./infra/mysql
+    ports:
+      - '3306:3306' # 外部からアクセスできるようにport番号を指定する
+    volumes:
+      - db-store:/var/lib/mysql
+
+volumes:
+  db-store:
